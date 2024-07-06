@@ -1,7 +1,7 @@
 package moexalgopackgo
 
 import (
-	"moexalgopackgo/models"
+	"github.com/DBoyara/MoexAlgoPackGo/models"
 )
 
 type IAlgoClient interface {

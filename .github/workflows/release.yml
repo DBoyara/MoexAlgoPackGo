@@ -32,22 +32,6 @@ jobs:
       - name: Run tests
         run: go test -v ./...
   
-      - name: Generate and publish Godoc
-        run: |
-            go mod tidy && go install golang.org/x/tools/cmd/godoc@latest
-            mkdir -p godoc
-            godoc -http=:6060 -index &
-            sleep 20 # Подождите, пока godoc запустится
-            wget -r -np -P godoc -nH --cut-dirs=1 -E http://127.0.0.1:6060/pkg/
-            pkill godoc # Завершить процесс godoc после скачивания документации
-  
-      - name: Push GoDoc to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./godoc
-          publish_branch: gh-pages
-
       - name: Install dependencies for semantic-release
         run: |
           if [ -f package.json ]; then 

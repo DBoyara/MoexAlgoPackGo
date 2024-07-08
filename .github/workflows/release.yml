@@ -36,9 +36,10 @@ jobs:
         run: |
             go install golang.org/x/tools/cmd/godoc@latest
             mkdir -p godoc
-            godoc -url=127.0.0.1:6060/pkg/ > godoc/index.html &
-            sleep 10 # Подождите, пока godoc запустится
-            wget -r -np -P godoc -nH --cut-dirs=1 -E 127.0.0.1:6060/pkg/
+            godoc -http=:6060 -index &
+            sleep 20 # Подождите, пока godoc запустится
+            wget -r -np -P godoc -nH --cut-dirs=1 -E http://127.0.0.1:6060/pkg/
+            pkill godoc # Завершить процесс godoc после скачивания документации
   
       - name: Push GoDoc to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3

@@ -1,6 +1,6 @@
 linters-settings:
   errcheck:
-    exclude: .errcheck.txt
+    exclude-functions: .errcheck.txt
   misspell:
     ignore-words:
       - strat
@@ -20,6 +20,9 @@ linters:
 output:
   uniq-by-line: false
 issues:
+  exclude-dirs:
+    - vendor
+    - pkg/client
   exclude-rules:
     - path: _test\.go
       linters:
@@ -33,8 +36,5 @@ issues:
     - EXC0014
 run:
   issues-exit-code: 1
-  skip-dirs:
-    - vendor
-    - pkg/client
   timeout: 20m
   modules-download-mode: mod

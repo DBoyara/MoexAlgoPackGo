@@ -1,6 +1,7 @@
 package moexalgopackgo
 
 import (
+	"fmt"
 	"net/http"
 )
 
@@ -17,6 +18,10 @@ func (a *AlgoClient) Authenticate() error {
 		return err
 	}
 	defer response.Body.Close()
+
+	if response.StatusCode != http.StatusOK {
+		return fmt.Errorf("failed to authenticate | Status Code: %d | Text: %s", response.StatusCode, response.Status)
+	}
 
 	cookies := response.Cookies()
 

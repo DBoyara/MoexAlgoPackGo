@@ -35,7 +35,7 @@ jobs:
         run: go install github.com/securego/gosec/v2/cmd/gosec@latest
 
       - name: Run gosec with config
-        run: gosec -conf=.gosec.json ./...
+        run: gosec -conf=./gosec.json ./...
 
       - name: Install dependencies
         run: go mod tidy

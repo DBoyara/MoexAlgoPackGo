@@ -16,31 +16,31 @@ type Data struct {
 }
 
 type Security struct {
-	SecId               string  `json:"sec_id"`                // Идентификатор ценной бумаги.
-	BoardId             string  `json:"board_id"`              // Идентификатор рынка.
-	ShortName           string  `json:"short_name"`            // Краткое название ценной бумаги.
-	SecName             string  `json:"sec_name"`              // Полное название ценной бумаги.
-	PrevSettlePrice     float64 `json:"prev_settle_price"`     // Предыдущая цена закрытия.
-	Decimals            int     `json:"decimals"`              // Количество десятичных знаков.
-	MinStep             float64 `json:"min_step"`              // Минимальный шаг изменения цены.
-	LastTradeDate       string  `json:"last_trade_date"`       // Дата последней сделки.
-	LastDelDate         string  `json:"last_del_date"`         // Дата последнего исполнения.
-	SecType             string  `json:"sec_type"`              // Тип ценной бумаги.
-	LatName             string  `json:"lat_name"`              // Латинское название ценной бумаги.
-	AssetCode           string  `json:"asset_code"`            // Код актива.
-	PreviosOpenPosition int     `json:"previos_open_position"` // Предыдущая открытая позиция.
-	LotVolume           int     `json:"lot_volume"`            // Объем лота.
-	InitalMargin        float64 `json:"initial_margin"`        // Начальная маржа.
-	HighLimit           float64 `json:"high_limit"`            // Верхний предел цены.
-	LowLimit            float64 `json:"low_limit"`             // Нижний предел цены.
-	StepPrice           float64 `json:"step_price"`            // Цена шага.
-	LastSettlPrice      float64 `json:"last_settl_price"`      // Последняя цена закрытия.
-	PrevPrice           float64 `json:"prev_price"`            // Предыдущая цена.
-	ImTime              string  `json:"im_time"`               // Время обновления начальной маржи.
-	BuySellFee          float64 `json:"buy_sell_fee"`          // Комиссия за покупку/продажу.
-	ScalperFee          float64 `json:"scalper_fee"`           // Комиссия за скальпирование.
-	NegotiatedFee       float64 `json:"negotiated_fee"`        // Комиссия за договоренность.
-	ExerciseFee         float64 `json:"exercise_fee"`          // Комиссия за исполнение.
+	SecId               string  `json:"sec_id"`                 // Идентификатор ценной бумаги.
+	BoardId             string  `json:"board_id"`               // Идентификатор рынка.
+	ShortName           string  `json:"short_name"`             // Краткое название ценной бумаги.
+	SecName             string  `json:"sec_name"`               // Полное название ценной бумаги.
+	PrevSettlePrice     float64 `json:"prev_settle_price"`      // Предыдущая цена закрытия.
+	Decimals            int     `json:"decimals"`               // Количество десятичных знаков.
+	MinStep             float64 `json:"min_step"`               // Минимальный шаг изменения цены.
+	LastTradeDate       string  `json:"last_trade_date"`        // Дата последней сделки.
+	LastDelDate         string  `json:"last_del_date"`          // Дата последнего исполнения.
+	SecType             string  `json:"sec_type"`               // Тип ценной бумаги.
+	LatName             string  `json:"lat_name"`               // Латинское название ценной бумаги.
+	AssetCode           string  `json:"asset_code"`             // Код актива.
+	PreviosOpenPosition int     `json:"previous_open_position"` // Предыдущая открытая позиция.
+	LotVolume           int     `json:"lot_volume"`             // Объем лота.
+	InitalMargin        float64 `json:"initial_margin"`         // Начальная маржа.
+	HighLimit           float64 `json:"high_limit"`             // Верхний предел цены.
+	LowLimit            float64 `json:"low_limit"`              // Нижний предел цены.
+	StepPrice           float64 `json:"step_price"`             // Цена шага.
+	LastSettlPrice      float64 `json:"last_settl_price"`       // Последняя цена закрытия.
+	PrevPrice           float64 `json:"prev_price"`             // Предыдущая цена.
+	ImTime              string  `json:"im_time"`                // Время обновления начальной маржи.
+	BuySellFee          float64 `json:"buy_sell_fee"`           // Комиссия за покупку/продажу.
+	ScalperFee          float64 `json:"scalper_fee"`            // Комиссия за скальпирование.
+	NegotiatedFee       float64 `json:"negotiated_fee"`         // Комиссия за договоренность.
+	ExerciseFee         float64 `json:"exercise_fee"`           // Комиссия за исполнение.
 }
 
 func (r *Response) MapSecuritySingleResponse() Security {

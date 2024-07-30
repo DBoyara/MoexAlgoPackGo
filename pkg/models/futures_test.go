@@ -279,14 +279,14 @@ func TestMapCandleData(t *testing.T) {
 
 func TestMapOrderBookData(t *testing.T) {
 	m := map[string]interface{}{
-		"BOARDID":   "RFUD",
-		"SECID":     "MMM4",
-		"BUYSELL":   "B",
-		"PRICE":     3462.65,
-		"QUANTITY":  100,
-		"SEQNUM":    20240412110944,
+		"BOARDID":    "RFUD",
+		"SECID":      "MMM4",
+		"BUYSELL":    "B",
+		"PRICE":      3462.65,
+		"QUANTITY":   100,
+		"SEQNUM":     20240412110944,
 		"UPDATETIME": "18:58:42",
-		"DECIMALS":  2,
+		"DECIMALS":   2,
 	}
 
 	expected := OrderBook{
@@ -309,18 +309,18 @@ func TestMapOrderBookData(t *testing.T) {
 
 func TestMapTradeData(t *testing.T) {
 	m := map[string]interface{}{
-		"TRADENO":        1,
-		"BOARDNAME":      "RFUD",
-		"SECID":          "MMM4",
-		"TRADEDATE":      "2022-01-01",
-		"TRADETIME":      "10:00:00",
-		"PRICE":          100.0,
-		"QUANTITY":       10,
-		"SYSTIME":        "2022-01-01 10:00:00",
-		"RECNO":          257357101010,
-		"OPENPOSITION":   76868,
-		"OFFMARKETDEAL":  0,
-		"BUYSELL":        "B",
+		"TRADENO":       1,
+		"BOARDNAME":     "RFUD",
+		"SECID":         "MMM4",
+		"TRADEDATE":     "2022-01-01",
+		"TRADETIME":     "10:00:00",
+		"PRICE":         100.0,
+		"QUANTITY":      10,
+		"SYSTIME":       "2022-01-01 10:00:00",
+		"RECNO":         257357101010,
+		"OPENPOSITION":  76868,
+		"OFFMARKETDEAL": 0,
+		"BUYSELL":       "B",
 	}
 
 	expected := Trade{

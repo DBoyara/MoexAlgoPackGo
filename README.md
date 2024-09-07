@@ -6,3 +6,6 @@ Golang client for AlgoPack
 [![License](https://img.shields.io/github/license/DBoyara/MoexAlgoPackGo)](https://github.com/DBoyara/MoexAlgoPackGo/blob/main/LICENSE)
 [![GitHub release](https://img.shields.io/github/release/DBoyara/MoexAlgoPackGo.svg)](https://GitHub.com/DBoyara/MoexAlgoPackGo/releases/)
 [![Known Vulnerabilities](https://snyk.io/test/github/DBoyara/MoexAlgoPackGo/badge.svg)](https://snyk.io/test/github/DBoyara/MoexAlgoPackGo)
+
+## Install
+go get -u github.com/DBoyara/MoexAlgoPackGo@v0.3.0

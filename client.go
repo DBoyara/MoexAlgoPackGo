@@ -22,6 +22,10 @@ type IAlgoClient interface {
 	GetFuturesCandles(ticker, from, till, interval string) ([]models.Candle, error)
 	// Стакан котировок по одному указанному фьючерсному контракту
 	GetFuturesOrderBookByTiker(ticker string) ([]models.OrderBook, error)
+	// Метрики рассчитанные на основе потока сделок (tradestats) по одному фьючерсному контракту
+	GetFuturesTradeStatsByTiker(ticker, from, till, latest string) ([]models.TradeStats, error)
+	// Метрики рассчитанные на основе стакана котировок (obstats) по одному фьючерсному контракту
+	GetFuturesObStatsByTiker(ticker, from, till, latest string) ([]models.ObStats, error)
 }
 
 type AlgoClient struct {

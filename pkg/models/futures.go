@@ -8,6 +8,9 @@ type Response struct {
 	Securities Data `json:"securities,omitempty"`
 	MarketData Data `json:"marketdata,omitempty"`
 	Candles    Data `json:"candles,omitempty"`
+	OrderBooks Data `json:"orderbook,omitempty"`
+	Trades     Data `json:"trades,omitempty"`
+	Data       Data `json:"data,omitempty"` // super candles
 }
 
 type Data struct {
@@ -179,14 +182,14 @@ type MarketData struct {
 }
 
 func (r *Response) MapMarketDataSingleResponse() MarketData {
-	data := utils.MapData(r.Securities.Columns, r.MarketData.Data)
+	data := utils.MapData(r.MarketData.Columns, r.MarketData.Data)
 	m := data[0]
 	return mapMarketData(m)
 }
 
 func (r *Response) MapMarketDataFullResponse() []MarketData {
 	res := []MarketData{}
-	data := utils.MapData(r.Securities.Columns, r.Securities.Data)
+	data := utils.MapData(r.MarketData.Columns, r.MarketData.Data)
 	for _, m := range data {
 		res = append(res, mapMarketData(m))
 	}
@@ -318,7 +321,7 @@ type Candle struct {
 
 func (r *Response) MapCandleResponse() []Candle {
 	res := []Candle{}
-	data := utils.MapData(r.Securities.Columns, r.Securities.Data)
+	data := utils.MapData(r.Candles.Columns, r.Candles.Data)
 	for _, m := range data {
 		res = append(res, mapCandleData(m))
 	}
@@ -369,7 +372,7 @@ type OrderBook struct {
 
 func (r *Response) MapOrderBookResponse() []OrderBook {
 	res := []OrderBook{}
-	data := utils.MapData(r.Securities.Columns, r.Securities.Data)
+	data := utils.MapData(r.OrderBooks.Columns, r.OrderBooks.Data)
 	for _, m := range data {
 		res = append(res, mapOrderBookData(m))
 	}
@@ -424,7 +427,7 @@ type Trade struct {
 
 func (r *Response) MapTradeResponse() []Trade {
 	res := []Trade{}
-	data := utils.MapData(r.Securities.Columns, r.Securities.Data)
+	data := utils.MapData(r.Trades.Columns, r.Trades.Data)
 	for _, m := range data {
 		res = append(res, mapTradeData(m))
 	}
@@ -469,6 +472,316 @@ func mapTradeData(m map[string]interface{}) Trade {
 	}
 	if val, ok := m["BUYSELL"].(string); ok {
 		t.BuySell = val
+	}
+
+	return t
+}
+
+type TradeStats struct {
+	TradeDate  string  `json:"trade_date"`   // дата сделки
+	TradeTime  string  `json:"trade_time"`   // время сделки
+	SecId      string  `json:"sec_id"`       // код инструмента
+	AssetCode  string  `json:"asset_code"`   // Код базового актива
+	PrOpen     float64 `json:"pr_open"`      // цена открытия
+	PrHigh     float64 `json:"pr_high"`      // максимальная цена
+	PrLow      float64 `json:"pr_low"`       // минимальная цена
+	PrClose    float64 `json:"pr_close"`     // цена закрытия
+	PrStd      float64 `json:"pr_std"`       // стандартное отклонение цены
+	Vol        int     `json:"vol"`          // объем в контрактах
+	Val        int     `json:"val"`          // оборот в рублях
+	Trades     int     `json:"trades"`       // кол-во сделок
+	PrVwap     float64 `json:"pr_vwap"`      // средневзвешенная цена
+	PrChange   float64 `json:"pr_change"`    // изменение цены в базисных пунктах
+	TradesB    int     `json:"frades_b"`     // кол-во сделок на покупку
+	TradesS    int     `json:"frades_s"`     // кол-во сделок на продажу
+	ValB       float64 `json:"val_b"`        // оборот в рублях на покупку
+	ValS       float64 `json:"val_s"`        // оборот в рублях на продажу
+	VolB       int     `json:"vol_b"`        // объем на покупку в лотах
+	VolS       int     `json:"vol_s"`        // объем на продажу в лотах
+	Disb       float64 `json:"disb"`         // дисбаланс объема
+	PrVwapB    float64 `json:"pr_vwap_b"`    // средневзвешенная цена на покупку
+	PrVwapS    float64 `json:"pr_vwap_s"`    // средневзвешенная цена на продажу
+	Im         float64 `json:"im"`           // гарантийное обеспечение
+	OiOpen     int     `json:"oi_open"`      // ОИ на открытии
+	OiHigh     int     `json:"oi_high"`      // максимальный ОИ
+	OiLow      int     `json:"oi_low"`       // минимальный ОИ
+	OiClose    int     `json:"oi_close"`     // ОИ на закрытии
+	SecPrOpen  int     `json:"sec_pr_open"`  // кол-во секунд до pr_open
+	SecPrHigh  int     `json:"sec_pr_high"`  // кол-во секунд до pr_high
+	SecPrLow   int     `json:"sec_pr_low"`   // кол-во секунд до pr_low
+	SecPrClose int     `json:"sec_pr_close"` // кол-во секунд до pr_close
+	SysTime    string  `json:"SYSTIME"`      // время системы
+}
+
+func (r *Response) TradeStatsResponse() []TradeStats {
+	res := []TradeStats{}
+	data := utils.MapData(r.Data.Columns, r.Data.Data)
+	for _, m := range data {
+		res = append(res, mapTradeStats(m))
+	}
+	return res
+}
+
+func mapTradeStats(m map[string]interface{}) TradeStats {
+	t := TradeStats{}
+
+	if val, ok := m["tradedate"].(string); ok {
+		t.TradeDate = val
+	}
+	if val, ok := m["tradetime"].(string); ok {
+		t.TradeTime = val
+	}
+	if val, ok := m["secid"].(string); ok {
+		t.SecId = val
+	}
+	if val, ok := m["asset_code"].(string); ok {
+		t.AssetCode = val
+	}
+	if val, ok := m["pr_open"].(float64); ok {
+		t.PrOpen = val
+	}
+	if val, ok := m["pr_high"].(float64); ok {
+		t.PrHigh = val
+	}
+	if val, ok := m["pr_low"].(float64); ok {
+		t.PrLow = val
+	}
+	if val, ok := m["pr_close"].(float64); ok {
+		t.PrClose = val
+	}
+	if val, ok := m["pr_std"].(float64); ok {
+		t.PrStd = val
+	}
+	if val, ok := m["vol"].(int); ok {
+		t.Vol = val
+	}
+	if val, ok := m["val"].(int); ok {
+		t.Val = val
+	}
+	if val, ok := m["trades"].(int); ok {
+		t.Trades = val
+	}
+	if val, ok := m["pr_vwap"].(float64); ok {
+		t.PrVwap = val
+	}
+	if val, ok := m["pr_change"].(float64); ok {
+		t.PrChange = val
+	}
+	if val, ok := m["trades_b"].(int); ok {
+		t.TradesB = val
+	}
+	if val, ok := m["trades_s"].(int); ok {
+		t.TradesS = val
+	}
+	if val, ok := m["val_b"].(float64); ok {
+		t.ValB = val
+	}
+	if val, ok := m["val_s"].(float64); ok {
+		t.ValS = val
+	}
+	if val, ok := m["vol_b"].(int); ok {
+		t.VolB = val
+	}
+	if val, ok := m["vol_s"].(int); ok {
+		t.VolS = val
+	}
+	if val, ok := m["disb"].(float64); ok {
+		t.Disb = val
+	}
+	if val, ok := m["pr_vwap_b"].(float64); ok {
+		t.PrVwapB = val
+	}
+	if val, ok := m["pr_vwap_s"].(float64); ok {
+		t.PrVwapS = val
+	}
+	if val, ok := m["im"].(float64); ok {
+		t.Im = val
+	}
+	if val, ok := m["oi_open"].(int); ok {
+		t.OiOpen = val
+	}
+	if val, ok := m["oi_high"].(int); ok {
+		t.OiHigh = val
+	}
+	if val, ok := m["oi_low"].(int); ok {
+		t.OiLow = val
+	}
+	if val, ok := m["oi_close"].(int); ok {
+		t.OiClose = val
+	}
+	if val, ok := m["sec_pr_open"].(int); ok {
+		t.SecPrOpen = val
+	}
+	if val, ok := m["sec_pr_high"].(int); ok {
+		t.SecPrHigh = val
+	}
+	if val, ok := m["sec_pr_low"].(int); ok {
+		t.SecPrLow = val
+	}
+	if val, ok := m["sec_pr_close"].(int); ok {
+		t.SecPrClose = val
+	}
+	if val, ok := m["SYSTIME"].(string); ok {
+		t.SysTime = val
+	}
+
+	return t
+}
+
+type ObStats struct {
+	TradeDate  string  `json:"trade_date"`  // дата сделки
+	TradeTime  string  `json:"trade_time"`  // время сделки
+	SecId      string  `json:"sec_id"`      // код инструмента
+	AssetCode  string  `json:"asset_code"`  // Код базового актива
+	MidPrice   float64 `json:"mid_price"`   // средняя цена между лучшей ценой на продажи и лучшей ценой на покупку
+	MicroPrice float64 `json:"micro_price"` // средневзвешенная цена между лучшей ценой на продажи и лучшей ценой на покупку
+	SpreadL1   float64 `json:"spread_l1"`   // спред цены в базисных пунктах
+	SpreadL2   float64 `json:"spread_l2"`   // спред между 2ым уровнем цен покупки и продажи
+	SpreadL3   float64 `json:"spread_l3"`   // спред между 3ым уровнем цен покупки и продажи
+	SpreadL5   float64 `json:"spread_l5"`   // спред между 5ым уровнем цен покупки и продажи
+	SpreadL10  float64 `json:"spread_l10"`  // спред между 10ым уровнем цен покупки и продажи
+	SpreadL20  float64 `json:"spread_l20"`  // спред между 20ым уровнем цен покупки и продажи
+	LevelsB    int     `json:"levels_b"`    // кол-во уровней цен в стакане (покупка)
+	LevelsS    int     `json:"levels_s"`    // кол-во уровней цен в стакане (продажа)
+	VolBL1     int     `json:"vol_b_l1"`    // объем на первом уровне (покупка)
+	VolBL2     int     `json:"vol_b_l2"`    // объем на первых двух уровнях (покупка)
+	VolBL3     int     `json:"vol_b_l3"`    // объем на первых трех уровнях (покупка)
+	VolBL5     int     `json:"vol_b_l5"`    // объем на первых пяти уровнях (покупка)
+	VolBL10    int     `json:"vol_b_l10"`   // объем на первых десяти уровнях (покупка)
+	VolBL20    int     `json:"vol_b_l20"`   // объем на первых двадцати уровнях (покупка)
+	VolSL1     int     `json:"vol_s_l1"`    // объем на первом уровне (продажа)
+	VolSL2     int     `json:"vol_s_l2"`    // объем на первых двух уровнях (продажа)
+	VolSL3     int     `json:"vol_s_l3"`    // объем на первых трех уровнях (продажа)
+	VolSL5     int     `json:"vol_s_l5"`    // объем на первых пяти уровнях (продажа)
+	VolSL10    int     `json:"vol_s_l10"`   // объем на первых десяти уровнях (продажа)
+	VolSL20    int     `json:"vol_s_l20"`   // объем на первых двадцати уровнях (продажа)
+	VwapBL3    float64 `json:"vwap_b_l3"`   // средневзвешенная цена по первым трем уровням на покупку
+	VwapBL5    float64 `json:"vwap_b_l5"`   // средневзвешенная цена по первым пяти уровням на покупку
+	VwapBL10   float64 `json:"vwap_b_l10"`  // средневзвешенная цена по первым десяти уровням на покупку
+	VwapBL20   float64 `json:"vwap_b_l20"`  // средневзвешенная цена по первым двадцати уровням на покупку
+	VwapSL3    float64 `json:"vwap_s_l3"`   // средневзвешенная цена по первым трем уровням на продажу
+	VwapSL5    float64 `json:"vwap_s_l5"`   // средневзвешенная цена по первым пяти уровням на продажу
+	VwapSL10   float64 `json:"vwap_s_l10"`  // средневзвешенная цена по первым десяти уровням на продажу
+	VwapSL20   float64 `json:"vwap_s_l20"`  // средневзвешенная цена по первым двадцати уровням на продажу
+	SysTime    string  `json:"SYSTIME"`     // время системы
+}
+
+func (r *Response) ObStatsResponse() []ObStats {
+	res := []ObStats{}
+	data := utils.MapData(r.Data.Columns, r.Data.Data)
+	for _, m := range data {
+		res = append(res, mapObStats(m))
+	}
+	return res
+}
+
+func mapObStats(m map[string]interface{}) ObStats {
+	t := ObStats{}
+
+	if val, ok := m["tradedate"].(string); ok {
+		t.TradeDate = val
+	}
+	if val, ok := m["tradetime"].(string); ok {
+		t.TradeTime = val
+	}
+	if val, ok := m["secid"].(string); ok {
+		t.SecId = val
+	}
+	if val, ok := m["asset_code"].(string); ok {
+		t.AssetCode = val
+	}
+	if val, ok := m["mid_price"].(float64); ok {
+		t.MidPrice = val
+	}
+	if val, ok := m["micro_price"].(float64); ok {
+		t.MicroPrice = val
+	}
+	if val, ok := m["spread_l1"].(float64); ok {
+		t.SpreadL1 = val
+	}
+	if val, ok := m["spread_l2"].(float64); ok {
+		t.SpreadL2 = val
+	}
+	if val, ok := m["spread_l3"].(float64); ok {
+		t.SpreadL3 = val
+	}
+	if val, ok := m["spread_l5"].(float64); ok {
+		t.SpreadL5 = val
+	}
+	if val, ok := m["spread_l10"].(float64); ok {
+		t.SpreadL10 = val
+	}
+	if val, ok := m["spread_l20"].(float64); ok {
+		t.SpreadL20 = val
+	}
+	if val, ok := m["levels_b"].(int); ok {
+		t.LevelsB = val
+	}
+	if val, ok := m["levels_s"].(int); ok {
+		t.LevelsS = val
+	}
+	if val, ok := m["vol_b_l1"].(int); ok {
+		t.VolBL1 = val
+	}
+	if val, ok := m["vol_b_l2"].(int); ok {
+		t.VolBL2 = val
+	}
+	if val, ok := m["vol_b_l3"].(int); ok {
+		t.VolBL3 = val
+	}
+	if val, ok := m["vol_b_l5"].(int); ok {
+		t.VolBL5 = val
+	}
+	if val, ok := m["vol_b_l10"].(int); ok {
+		t.VolBL10 = val
+	}
+	if val, ok := m["vol_b_l20"].(int); ok {
+		t.VolBL20 = val
+	}
+	if val, ok := m["vol_s_l1"].(int); ok {
+		t.VolSL1 = val
+	}
+	if val, ok := m["vol_s_l2"].(int); ok {
+		t.VolSL2 = val
+	}
+	if val, ok := m["vol_s_l3"].(int); ok {
+		t.VolSL3 = val
+	}
+	if val, ok := m["vol_s_l5"].(int); ok {
+		t.VolSL5 = val
+	}
+	if val, ok := m["vol_s_l10"].(int); ok {
+		t.VolSL10 = val
+	}
+	if val, ok := m["vol_s_l20"].(int); ok {
+		t.VolSL20 = val
+	}
+	if val, ok := m["vwap_b_l3"].(float64); ok {
+		t.VwapBL3 = val
+	}
+	if val, ok := m["vwap_b_l5"].(float64); ok {
+		t.VwapBL5 = val
+	}
+	if val, ok := m["vwap_b_l10"].(float64); ok {
+		t.VwapBL10 = val
+	}
+	if val, ok := m["vwap_b_l20"].(float64); ok {
+		t.VwapBL20 = val
+	}
+	if val, ok := m["vwap_s_l3"].(float64); ok {
+		t.VwapSL3 = val
+	}
+	if val, ok := m["vwap_s_l5"].(float64); ok {
+		t.VwapSL5 = val
+	}
+	if val, ok := m["vwap_s_l10"].(float64); ok {
+		t.VwapSL10 = val
+	}
+	if val, ok := m["vwap_s_l20"].(float64); ok {
+		t.VwapSL20 = val
+	}
+	if val, ok := m["SYSTIME"].(string); ok {
+		t.SysTime = val
 	}
 
 	return t

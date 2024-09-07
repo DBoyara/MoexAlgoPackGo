@@ -25,3 +25,11 @@ func (a *AlgoClient) GetFuturesCandles(ticker, from, till, interval string) ([]m
 func (a *AlgoClient) GetFuturesOrderBookByTiker(ticker string) ([]models.OrderBook, error) {
 	return a.futures.GetOrderBookByTicker(ticker)
 }
+
+func (a *AlgoClient) GetFuturesTradeStatsByTiker(ticker, from, till, latest string) ([]models.TradeStats, error) {
+	return a.futures.GetFuturesTradeStatsByTicker(ticker, from, till, latest)
+}
+
+func (a *AlgoClient) GetFuturesObStatsByTiker(ticker, from, till, latest string) ([]models.ObStats, error) {
+	return a.futures.GetFuturesObStatsByTicker(ticker, from, till, latest)
+}

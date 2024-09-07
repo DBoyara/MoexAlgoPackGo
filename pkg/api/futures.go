@@ -140,3 +140,43 @@ func (f *FutureClient) GetTradesByTicker(ticker string) ([]models.Trade, error) 
 	res = resp.MapTradeResponse()
 	return res, nil
 }
+
+func (f *FutureClient) GetFuturesTradeStatsByTicker(ticker, from, till, latest string) ([]models.TradeStats, error) {
+	res := []models.TradeStats{}
+	url := fmt.Sprintf(
+		`%s/iss/datashop/algopack/fo/tradestats/%s.json?from=%s&till=%s&latest=%s`,
+		f.baseUrl,
+		ticker,
+		from,
+		till,
+		latest,
+	)
+
+	resp, err := f.doRequest(url, fmt.Sprintf("failed to tradestats for future %s", ticker))
+	if err != nil {
+		return res, err
+	}
+
+	res = resp.TradeStatsResponse()
+	return res, nil
+}
+
+func (f *FutureClient) GetFuturesObStatsByTicker(ticker, from, till, latest string) ([]models.ObStats, error) {
+	res := []models.ObStats{}
+	url := fmt.Sprintf(
+		`%s/iss/datashop/algopack/fo/obstats/%s.json?from=%s&till=%s&latest=%s`,
+		f.baseUrl,
+		ticker,
+		from,
+		till,
+		latest,
+	)
+
+	resp, err := f.doRequest(url, fmt.Sprintf("failed to obstats for future %s", ticker))
+	if err != nil {
+		return res, err
+	}
+
+	res = resp.ObStatsResponse()
+	return res, nil
+}

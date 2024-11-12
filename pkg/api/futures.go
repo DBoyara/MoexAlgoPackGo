@@ -2,34 +2,19 @@ package api
 
 import (
 	"fmt"
-	"net/http"
 
 	"github.com/DBoyara/MoexAlgoPackGo/pkg/models"
 )
 
-type FutureClient struct {
-	baseUrl    string
-	cert       string
-	httpClient *http.Client
-}
-
-func NewFutureClient(baseUrl, cert string) *FutureClient {
-	return &FutureClient{
-		baseUrl:    baseUrl,
-		cert:       cert,
-		httpClient: &http.Client{},
-	}
-}
-
-func (f *FutureClient) GetInfoByTicker(ticker string) (models.Security, error) {
+func (a *ApiClient) GetInfoByTicker(ticker string) (models.Security, error) {
 	res := models.Security{}
 	url := fmt.Sprintf(
 		`%s/iss/engines/futures/markets/forts/boards/rfud/securities/%s.json?iss.only=securities`,
-		f.baseUrl,
+		a.baseUrl,
 		ticker,
 	)
 
-	resp, err := f.doRequest(url, fmt.Sprintf("failed to get future info by ticker: %s", ticker))
+	resp, err := a.doRequest(url, fmt.Sprintf("failed to get future info by ticker: %s", ticker))
 	if err != nil {
 		return res, err
 	}
@@ -38,14 +23,14 @@ func (f *FutureClient) GetInfoByTicker(ticker string) (models.Security, error) {
 	return res, nil
 }
 
-func (f *FutureClient) GetAllInfo() ([]models.Security, error) {
+func (a *ApiClient) GetAllInfo() ([]models.Security, error) {
 	res := []models.Security{}
 	url := fmt.Sprintf(
 		`%s/iss/engines/futures/markets/forts/boards/rfud/securities.json?iss.only=securities`,
-		f.baseUrl,
+		a.baseUrl,
 	)
 
-	resp, err := f.doRequest(url, "failed to get futures info")
+	resp, err := a.doRequest(url, "failed to get futures info")
 	if err != nil {
 		return res, err
 	}
@@ -54,15 +39,15 @@ func (f *FutureClient) GetAllInfo() ([]models.Security, error) {
 	return res, nil
 }
 
-func (f *FutureClient) GetMarketDataByTicker(ticker string) (models.MarketData, error) {
+func (a *ApiClient) GetMarketDataByTicker(ticker string) (models.MarketData, error) {
 	res := models.MarketData{}
 	url := fmt.Sprintf(
 		`%s/iss/engines/futures/markets/forts/boards/rfud/securities/%s.json?iss.only=marketdata`,
-		f.baseUrl,
+		a.baseUrl,
 		ticker,
 	)
 
-	resp, err := f.doRequest(url, fmt.Sprintf("failed to get future market data by ticker: %s", ticker))
+	resp, err := a.doRequest(url, fmt.Sprintf("failed to get future market data by ticker: %s", ticker))
 	if err != nil {
 		return res, err
 	}
@@ -71,14 +56,14 @@ func (f *FutureClient) GetMarketDataByTicker(ticker string) (models.MarketData, 
 	return res, nil
 }
 
-func (f *FutureClient) GetAllMarketData() ([]models.MarketData, error) {
+func (a *ApiClient) GetAllMarketData() ([]models.MarketData, error) {
 	res := []models.MarketData{}
 	url := fmt.Sprintf(
 		`%s/iss/engines/futures/markets/forts/boards/rfud/securities.json?iss.only=marketdata`,
-		f.baseUrl,
+		a.baseUrl,
 	)
 
-	resp, err := f.doRequest(url, "failed to get futures market data")
+	resp, err := a.doRequest(url, "failed to get futures market data")
 	if err != nil {
 		return res, err
 	}
@@ -87,18 +72,18 @@ func (f *FutureClient) GetAllMarketData() ([]models.MarketData, error) {
 	return res, nil
 }
 
-func (f *FutureClient) GetCandlesByTicker(ticker, from, till, interval string) ([]models.Candle, error) {
+func (a *ApiClient) GetCandlesByTicker(ticker, from, till, interval string) ([]models.Candle, error) {
 	res := []models.Candle{}
 	url := fmt.Sprintf(
 		`%s/iss/engines/futures/markets/forts/boards/rfud/securities/%s/candles.json?from=%s&till=%s&interval=%s`,
-		f.baseUrl,
+		a.baseUrl,
 		ticker,
 		from,
 		till,
 		interval,
 	)
 
-	resp, err := f.doRequest(url, fmt.Sprintf("failed to get candles for future: %s", ticker))
+	resp, err := a.doRequest(url, fmt.Sprintf("failed to get candles for future: %s", ticker))
 	if err != nil {
 		return res, err
 	}
@@ -107,15 +92,15 @@ func (f *FutureClient) GetCandlesByTicker(ticker, from, till, interval string) (
 	return res, nil
 }
 
-func (f *FutureClient) GetOrderBookByTicker(ticker string) ([]models.OrderBook, error) {
+func (a *ApiClient) GetFuturesOrderBookByTiker(ticker string) ([]models.OrderBook, error) {
 	res := []models.OrderBook{}
 	url := fmt.Sprintf(
 		`%s/iss/engines/futures/markets/forts/boards/rfud/securities/%s/orderbook.json`,
-		f.baseUrl,
+		a.baseUrl,
 		ticker,
 	)
 
-	resp, err := f.doRequest(url, fmt.Sprintf("failed to get orderbook for future %s", ticker))
+	resp, err := a.doRequest(url, fmt.Sprintf("failed to get orderbook for future %s", ticker))
 	if err != nil {
 		return res, err
 	}
@@ -124,15 +109,15 @@ func (f *FutureClient) GetOrderBookByTicker(ticker string) ([]models.OrderBook, 
 	return res, nil
 }
 
-func (f *FutureClient) GetTradesByTicker(ticker string) ([]models.Trade, error) {
+func (a *ApiClient) GetTradesByTicker(ticker string) ([]models.Trade, error) {
 	res := []models.Trade{}
 	url := fmt.Sprintf(
 		`%s/iss/engines/futures/markets/forts/boards/rfud/securities/%s/trades.json`,
-		f.baseUrl,
+		a.baseUrl,
 		ticker,
 	)
 
-	resp, err := f.doRequest(url, fmt.Sprintf("failed to get trades for future %s", ticker))
+	resp, err := a.doRequest(url, fmt.Sprintf("failed to get trades for future %s", ticker))
 	if err != nil {
 		return res, err
 	}
@@ -141,18 +126,18 @@ func (f *FutureClient) GetTradesByTicker(ticker string) ([]models.Trade, error) 
 	return res, nil
 }
 
-func (f *FutureClient) GetFuturesTradeStatsByTicker(ticker, from, till, latest string) ([]models.TradeStats, error) {
+func (a *ApiClient) GetFuturesTradeStatsByTicker(ticker, from, till, latest string) ([]models.TradeStats, error) {
 	res := []models.TradeStats{}
 	url := fmt.Sprintf(
 		`%s/iss/datashop/algopack/fo/tradestats/%s.json?from=%s&till=%s&latest=%s`,
-		f.baseUrl,
+		a.baseUrl,
 		ticker,
 		from,
 		till,
 		latest,
 	)
 
-	resp, err := f.doRequest(url, fmt.Sprintf("failed to tradestats for future %s", ticker))
+	resp, err := a.doRequest(url, fmt.Sprintf("failed to tradestats for future %s", ticker))
 	if err != nil {
 		return res, err
 	}
@@ -161,18 +146,18 @@ func (f *FutureClient) GetFuturesTradeStatsByTicker(ticker, from, till, latest s
 	return res, nil
 }
 
-func (f *FutureClient) GetFuturesObStatsByTicker(ticker, from, till, latest string) ([]models.ObStats, error) {
+func (a *ApiClient) GetFuturesObStatsByTicker(ticker, from, till, latest string) ([]models.ObStats, error) {
 	res := []models.ObStats{}
 	url := fmt.Sprintf(
 		`%s/iss/datashop/algopack/fo/obstats/%s.json?from=%s&till=%s&latest=%s`,
-		f.baseUrl,
+		a.baseUrl,
 		ticker,
 		from,
 		till,
 		latest,
 	)
 
-	resp, err := f.doRequest(url, fmt.Sprintf("failed to obstats for future %s", ticker))
+	resp, err := a.doRequest(url, fmt.Sprintf("failed to obstats for future %s", ticker))
 	if err != nil {
 		return res, err
 	}

@@ -9,7 +9,25 @@ import (
 	"github.com/DBoyara/MoexAlgoPackGo/pkg/models"
 )
 
-func (f *FutureClient) doRequest(url, errText string) (*models.Response, error) {
+type ApiClient struct {
+	baseUrl    string
+	cert       string
+	httpClient *http.Client
+}
+
+func NewApiClient(baseUrl, cert string) *ApiClient {
+	return &ApiClient{
+		baseUrl: baseUrl,
+		cert:    cert,
+		httpClient: &http.Client{
+			Transport: &http.Transport{
+				Proxy: nil,
+			},
+		},
+	}
+}
+
+func (a *ApiClient) doRequest(url, errText string) (*models.Response, error) {
 	resp := &models.Response{}
 
 	request, err := http.NewRequest(http.MethodGet, url, nil)
@@ -17,10 +35,10 @@ func (f *FutureClient) doRequest(url, errText string) (*models.Response, error) 
 		return resp, err
 	}
 
-	request.Header.Add("Cookie", fmt.Sprintf("MicexPassportCert=%s", f.cert))
+	request.Header.Add("Cookie", fmt.Sprintf("MicexPassportCert=%s", a.cert))
 	request.Header.Add("Cache-Control", "no-cache")
 
-	response, err := http.DefaultClient.Do(request)
+	response, err := a.httpClient.Do(request)
 	if err != nil {
 		return resp, err
 	}

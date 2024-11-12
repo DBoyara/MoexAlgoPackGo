@@ -26,15 +26,17 @@ type IAlgoClient interface {
 	GetFuturesTradeStatsByTiker(ticker, from, till, latest string) ([]models.TradeStats, error)
 	// Метрики рассчитанные на основе стакана котировок (obstats) по одному фьючерсному контракту
 	GetFuturesObStatsByTiker(ticker, from, till, latest string) ([]models.ObStats, error)
+	// Стакан котировок по одному указанному инструменту
+	GetStockOrderBookByTicker(ticker string) ([]models.OrderBook, error)
 }
 
 type AlgoClient struct {
-	auth_url string
-	base_url string
-	login    string
-	password string
-	cert     string
-	futures  *api.FutureClient
+	auth_url  string
+	base_url  string
+	login     string
+	password  string
+	cert      string
+	apiClient *api.ApiClient
 }
 
 func NewAlgoClient(login, password string) IAlgoClient {
@@ -50,12 +52,17 @@ func NewAlgoClient(login, password string) IAlgoClient {
 		log.Fatalf("failed to authenticate: %v", err)
 	}
 
-	client.futures = api.NewFutureClient(client.base_url, client.cert)
-
+	client.apiClient = api.NewApiClient(client.base_url, client.cert)
 	return client
 }
 
 func (a *AlgoClient) authenticate() error {
+	client := &http.Client{
+		Transport: &http.Transport{
+			Proxy: nil,
+		},
+	}
+
 	request, err := http.NewRequest(http.MethodGet, a.auth_url, nil)
 	if err != nil {
 		return err
@@ -63,7 +70,7 @@ func (a *AlgoClient) authenticate() error {
 
 	request.SetBasicAuth(a.login, a.password)
 
-	response, err := http.DefaultClient.Do(request)
+	response, err := client.Do(request)
 	if err != nil {
 		return err
 	}

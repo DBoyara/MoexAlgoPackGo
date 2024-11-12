@@ -25,4 +25,4 @@ lint: ## Run linter
 	go vet ./...
 
 build: dep ## Build executable.
-	go build -v main.go
+	go build -v client.go

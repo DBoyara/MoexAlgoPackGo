@@ -16,7 +16,7 @@ func TestFutureClient_GetInfoByTicker(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client := api.NewFutureClient(server.URL, "")
+	client := api.NewApiClient(server.URL, "")
 	security, err := client.GetInfoByTicker("sber")
 
 	assert.NoError(t, err)
@@ -30,7 +30,7 @@ func TestFutureClient_GetMarketDataByTicker(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client := api.NewFutureClient(server.URL, "")
+	client := api.NewApiClient(server.URL, "")
 	marketData, err := client.GetMarketDataByTicker("sber")
 
 	assert.NoError(t, err)
@@ -44,7 +44,7 @@ func TestFutureClient_GetCandlesByTicker(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client := api.NewFutureClient(server.URL, "")
+	client := api.NewApiClient(server.URL, "")
 	candles, err := client.GetCandlesByTicker("sber", "2022-01-01", "2022-01-02", "1")
 
 	assert.NoError(t, err)
@@ -58,8 +58,8 @@ func TestFutureClient_GetOrderBookByTicker(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client := api.NewFutureClient(server.URL, "")
-	orderBook, err := client.GetOrderBookByTicker("RFUD")
+	client := api.NewApiClient(server.URL, "")
+	orderBook, err := client.GetFuturesOrderBookByTiker("RFUD")
 
 	assert.NoError(t, err)
 	assert.Len(t, orderBook, 1)
@@ -72,7 +72,7 @@ func TestFutureClient_GetTradesByTicker(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client := api.NewFutureClient(server.URL, "")
+	client := api.NewApiClient(server.URL, "")
 	trades, err := client.GetTradesByTicker("test")
 
 	assert.NoError(t, err)
@@ -86,7 +86,7 @@ func TestFutureClient_GetFuturesTradeStatsByTicker(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client := api.NewFutureClient(server.URL, "")
+	client := api.NewApiClient(server.URL, "")
 	tradeStats, err := client.GetFuturesTradeStatsByTicker("test", "2022-01-01", "2022-01-02", "latest")
 
 	assert.NoError(t, err)
@@ -100,7 +100,7 @@ func TestFutureClient_GetFuturesObStatsByTicker(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client := api.NewFutureClient(server.URL, "")
+	client := api.NewApiClient(server.URL, "")
 	obStats, err := client.GetFuturesObStatsByTicker("test", "2022-01-01", "2022-01-02", "latest")
 
 	assert.NoError(t, err)

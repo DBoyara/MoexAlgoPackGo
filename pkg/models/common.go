@@ -16,7 +16,6 @@ type Data struct {
 	Data    [][]interface{} `json:"data"`
 }
 
-
 type Candle struct {
 	Open   float64 `json:"open"`   // Цена открытия.
 	Close  float64 `json:"close"`  // Цена закрытия.

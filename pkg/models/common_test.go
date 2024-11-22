@@ -5,6 +5,36 @@ import (
 	"testing"
 )
 
+func TestMapCandleData(t *testing.T) {
+	m := map[string]interface{}{
+		"open":   100.0,
+		"close":  150.0,
+		"high":   200.0,
+		"low":    50.0,
+		"value":  1000,
+		"volume": 500.0,
+		"begin":  "2022-01-26 23:20:00",
+		"end":    "2022-01-26 23:27:01",
+	}
+
+	expected := Candle{
+		Open:   100.0,
+		Close:  150.0,
+		High:   200.0,
+		Low:    50.0,
+		Value:  1000,
+		Volume: 500.0,
+		Begin:  "2022-01-26 23:20:00",
+		End:    "2022-01-26 23:27:01",
+	}
+
+	result := mapCandleData(m)
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Errorf("mapCandleData() = %v, want %v", result, expected)
+	}
+}
+
 func TestMapOrderBookData(t *testing.T) {
 	m := map[string]interface{}{
 		"BOARDID":    "RFUD",

@@ -8,4 +8,4 @@ Golang client for AlgoPack
 [![Known Vulnerabilities](https://snyk.io/test/github/DBoyara/MoexAlgoPackGo/badge.svg)](https://snyk.io/test/github/DBoyara/MoexAlgoPackGo)
 
 ## Install
-go get -u github.com/DBoyara/MoexAlgoPackGo@v0.4.0
+go get -u github.com/DBoyara/MoexAlgoPackGo@v0.5.0

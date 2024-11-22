@@ -59,3 +59,52 @@ func (a *ApiClient) doRequest(url, errText string) (*models.Response, error) {
 	}
 	return resp, err
 }
+
+func (a *ApiClient) GetCandlesByTicker(ticker, from, till, interval, board string) ([]models.Candle, error) {
+	res := []models.Candle{}
+	url := a.getRealTimeUrlByBoard(board)
+	uri := fmt.Sprintf(
+		`%s/%s/%s/candles.json?from=%s&till=%s&interval=%s`,
+		a.baseUrl,
+		url,
+		ticker,
+		from,
+		till,
+		interval,
+	)
+
+	resp, err := a.doRequest(uri, fmt.Sprintf("failed to get candles for future: %s", ticker))
+	if err != nil {
+		return res, err
+	}
+
+	res = resp.MapCandleResponse()
+	return res, nil
+}
+
+func (a *ApiClient) GetOrderBookByTicker(ticker, board string) ([]models.OrderBook, error) {
+	res := []models.OrderBook{}
+	url := a.getRealTimeUrlByBoard(board)
+	uri := fmt.Sprintf(
+		`%s/%s/%s/orderbook.json`,
+		a.baseUrl,
+		url,
+		ticker,
+	)
+
+	resp, err := a.doRequest(uri, fmt.Sprintf("failed to get orderbook for future %s", ticker))
+	if err != nil {
+		return res, err
+	}
+
+	res = resp.MapOrderBookResponse()
+	return res, nil
+}
+
+func (a *ApiClient) getRealTimeUrlByBoard(board string) string {
+	if board == "tqbr" {
+		return "iss/engines/stock/markets/shares/boards/tqbr/securities"
+	} else {
+		return "iss/engines/futures/markets/forts/boards/rfud/securities"
+	}
+}

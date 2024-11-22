@@ -2,6 +2,72 @@ package models
 
 import "github.com/DBoyara/MoexAlgoPackGo/pkg/utils"
 
+type Response struct {
+	Securities Data `json:"securities,omitempty"`
+	MarketData Data `json:"marketdata,omitempty"`
+	Candles    Data `json:"candles,omitempty"`
+	OrderBooks Data `json:"orderbook,omitempty"`
+	Trades     Data `json:"trades,omitempty"`
+	Data       Data `json:"data,omitempty"` // super candles
+}
+
+type Data struct {
+	Columns []string        `json:"columns"`
+	Data    [][]interface{} `json:"data"`
+}
+
+
+type Candle struct {
+	Open   float64 `json:"open"`   // Цена открытия.
+	Close  float64 `json:"close"`  // Цена закрытия.
+	High   float64 `json:"high"`   // Максимальная цена.
+	Low    float64 `json:"low"`    // Минимальная цена.
+	Value  int     `json:"value"`  // Объем в рублях
+	Volume float64 `json:"volume"` // Объем в лотах
+	Begin  string  `json:"begin"`  // Начало свечки
+	End    string  `json:"end"`    // Конец свечки
+}
+
+func (r *Response) MapCandleResponse() []Candle {
+	res := []Candle{}
+	data := utils.MapData(r.Candles.Columns, r.Candles.Data)
+	for _, m := range data {
+		res = append(res, mapCandleData(m))
+	}
+	return res
+}
+
+func mapCandleData(m map[string]interface{}) Candle {
+	c := Candle{}
+
+	if val, ok := m["open"].(float64); ok {
+		c.Open = val
+	}
+	if val, ok := m["close"].(float64); ok {
+		c.Close = val
+	}
+	if val, ok := m["high"].(float64); ok {
+		c.High = val
+	}
+	if val, ok := m["low"].(float64); ok {
+		c.Low = val
+	}
+	if val, ok := m["value"].(int); ok {
+		c.Value = val
+	}
+	if val, ok := m["volume"].(float64); ok {
+		c.Volume = val
+	}
+	if val, ok := m["begin"].(string); ok {
+		c.Begin = val
+	}
+	if val, ok := m["end"].(string); ok {
+		c.End = val
+	}
+
+	return c
+}
+
 type OrderBook struct {
 	BoardId    string  `json:"board_id"`    // Идентификатор рынка.
 	SecId      string  `json:"sec_id"`      // Идентификатор ценной бумаги.

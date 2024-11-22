@@ -72,43 +72,6 @@ func (a *ApiClient) GetAllMarketData() ([]models.MarketData, error) {
 	return res, nil
 }
 
-func (a *ApiClient) GetCandlesByTicker(ticker, from, till, interval string) ([]models.Candle, error) {
-	res := []models.Candle{}
-	url := fmt.Sprintf(
-		`%s/iss/engines/futures/markets/forts/boards/rfud/securities/%s/candles.json?from=%s&till=%s&interval=%s`,
-		a.baseUrl,
-		ticker,
-		from,
-		till,
-		interval,
-	)
-
-	resp, err := a.doRequest(url, fmt.Sprintf("failed to get candles for future: %s", ticker))
-	if err != nil {
-		return res, err
-	}
-
-	res = resp.MapCandleResponse()
-	return res, nil
-}
-
-func (a *ApiClient) GetFuturesOrderBookByTiker(ticker string) ([]models.OrderBook, error) {
-	res := []models.OrderBook{}
-	url := fmt.Sprintf(
-		`%s/iss/engines/futures/markets/forts/boards/rfud/securities/%s/orderbook.json`,
-		a.baseUrl,
-		ticker,
-	)
-
-	resp, err := a.doRequest(url, fmt.Sprintf("failed to get orderbook for future %s", ticker))
-	if err != nil {
-		return res, err
-	}
-
-	res = resp.MapOrderBookResponse()
-	return res, nil
-}
-
 func (a *ApiClient) GetTradesByTicker(ticker string) ([]models.Trade, error) {
 	res := []models.Trade{}
 	url := fmt.Sprintf(
